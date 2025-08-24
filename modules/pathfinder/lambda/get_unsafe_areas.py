@@ -11,6 +11,18 @@ def lambda_handler(event, context):
     Lambda function to get unsafe areas from the database.
     '''
     try:
+        # preflight response for CORS
+        if event.get("httpMethod") == "OPTIONS":
+            # Preflight response
+            return {
+                "statusCode": 200,
+                "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Methods": "GET,OPTIONS"
+                },
+                "body": ""
+        }
         # fetch crimes from the database
         crimes = crime_service.get_all_crimes()
         
@@ -42,6 +54,11 @@ def lambda_handler(event, context):
         
         return {
             "statusCode": 200,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods": "GET,OPTIONS"
+            },
             "body": json.dumps(response_body)
         }
     except Exception as e:
