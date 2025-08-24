@@ -10,7 +10,7 @@ import requests
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-def get_all_crime():
+def get_all_crimes():
     try:
         crime_table = dbh.get_ytd_crime_data_table()
         response = crime_table.scan()
@@ -29,7 +29,7 @@ def get_crime(geohash):
         raise e
 
 
-def batch_add_crime(crimes):
+def batch_add_crimes(crimes):
     try:
         crime_table = dbh.get_ytd_crime_data_table()
         with crime_table.batch_writer() as batch:
@@ -39,7 +39,7 @@ def batch_add_crime(crimes):
         logger.error("Error adding crime data", exc_info=True)
         raise e
 
-def batch_update_crime(to_update_and_add, to_delete):
+def batch_update_crimes(to_update_and_add, to_delete):
     try:
         crime_table = dbh.get_ytd_crime_data_table()
         with crime_table.batch_writer() as batch:
@@ -89,12 +89,12 @@ def bucket_by_geohash(data, precision):
     return counts
 
 def get_threshold(percentile):
-    crimes = get_all_crime()
+    crimes = get_all_crimes()
     crime_counts = [crime['count'] for crime in crimes]
     return np.percentile(crime_counts, percentile)  
 
 def get_excluded_polygons(targeted_gh):
-    crimes = get_all_crime()
+    crimes = get_all_crimes()
     threshold = get_threshold(c.PERCENTILE)
     
     polygons = []

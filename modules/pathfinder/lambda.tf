@@ -60,3 +60,37 @@ data "archive_file" "add_crimes" {
 
   depends_on = [random_uuid.archive_trigger]
 }
+
+resource "aws_lambda_function" "update_crimes" {
+  filename      = data.archive_file.update_crimes.output_path
+  function_name = "update-crimes"
+  handler       = "update_crimes.lambda_handler"
+  source_code_hash = data.archive_file.update_crimes.output_base64sha256
+  description   = "Lambda function to update crimes in DynamoDB"
+  role          = aws_iam_role.pathfinder_lambda.arn
+  runtime       = local.python_runtime
+  timeout       = 300
+  layers = [aws_lambda_layer_version.python_layer.arn]
+  depends_on = [data.archive_file.add_crimes]
+}
+
+data "archive_file" "update_crimes" {
+  type        = "zip"
+  output_path = "${path.module}/temp/update_crimes.zip"
+
+  source {
+    content = file("${path.module}/lambda/update_crimes.py")
+    filename = "update_crimes.py"
+  }
+
+  dynamic "source" {
+    for_each = local.all_python_files
+    
+    content {
+      content  = file(source.value)
+      filename = source.key
+    }
+  }
+
+  depends_on = [random_uuid.archive_trigger]
+}

@@ -20,7 +20,7 @@ def lambda_handler(event, context):
         # update/add/delete crimes in the database
         new_counts = crime_service.bucket_by_geohash(crimes, c.GEOHASH_PRECISION)
 
-        existing_items = crime_service.get_all_crime()
+        existing_items = crime_service.get_all_crimes()
         existing_counts = {item['geohash']: int(item['count']) for item in existing_items}
 
         to_update_or_add = {}
@@ -30,7 +30,7 @@ def lambda_handler(event, context):
         
         to_delete = [gh for gh in existing_counts.keys() if gh not in new_counts]
 
-        crime_service.batch_update_crime(to_update_or_add, to_delete)
+        crime_service.batch_update_crimes(to_update_or_add, to_delete)
 
         return {
             "statusCode": 200,

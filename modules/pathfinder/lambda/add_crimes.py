@@ -24,7 +24,7 @@ def lambda_handler(event, context):
         crimes_by_geohash = crime_service.bucket_by_geohash(crimes, c.GEOHASH_PRECISION)
         
         # add crimes to the database
-        crime_service.batch_add_crime(crimes_by_geohash)
+        crime_service.batch_add_crimes(crimes_by_geohash)
         
         return {"statusCode": 200, "body": json.dumps(f"Added {len(crimes_by_geohash)} crimes to the database")}
     except Exception as e:
