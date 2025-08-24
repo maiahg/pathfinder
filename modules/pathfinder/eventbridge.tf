@@ -1,3 +1,7 @@
+########################################################################################
+# EventBridge Rule for Weekly Update of Crimes
+########################################################################################
+
 resource "aws_cloudwatch_event_rule" "weekly_update_crimes" {
   name                = "weekly-update-crimes"
   description         = "Trigger update_crimes Lambda every week"

@@ -90,7 +90,7 @@ def bucket_by_geohash(data, precision):
 
 def get_threshold(percentile):
     crimes = get_all_crimes()
-    crime_counts = [crime['count'] for crime in crimes]
+    crime_counts = [float(crime['count']) for crime in crimes]
     return np.percentile(crime_counts, percentile)  
 
 def get_excluded_polygons(targeted_gh):
@@ -99,10 +99,10 @@ def get_excluded_polygons(targeted_gh):
     
     polygons = []
     for crime in crimes:
-        count = crime['count']
+        count = float(crime['count'])
         crime_geohash = crime['geohash']
         
-        if count < int(threshold) or crime_geohash[:c.GEOHASH_LIMIT] not in targeted_gh:
+        if count < threshold or crime_geohash[:c.GEOHASH_LIMIT] not in targeted_gh:
             continue
         
         polygon = geohash_to_polygon(crime_geohash)
@@ -164,7 +164,7 @@ def map_valhalla_to_directions_response(data):
     top_streets = sorted(street_distances.items(), key=lambda x: x[1], reverse=True)[:2]
     top_street_names = [street for street, _ in top_streets]
 
-    # build GeoJSON-style response
+    # build GeoJSON response
     response = {
         "type": "Feature",
         "properties": {},
