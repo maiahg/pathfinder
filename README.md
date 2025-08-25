@@ -24,4 +24,5 @@ https://github.com/user-attachments/assets/9131beda-308d-45ee-97d7-58fdb7688685
 - Write documentation for future references
 
 ## Miscelaneous
-A local version of the project that was built with Vite and FastAPI for experimentation is available at [pathfinder-local](https://github.com/maiahg/pathfinder_local) (lowkey quick and dirty style)
+- A local version of the project that was built with Vite and FastAPI for experimentation is available at [pathfinder-local](https://github.com/maiahg/pathfinder_local) (lowkey quick and dirty style)
+- The deployment is no longer working as I needed to destroy the AWS services.
