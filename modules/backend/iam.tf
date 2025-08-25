@@ -46,7 +46,7 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 }
 
 resource "aws_iam_policy" "lambda" {
-  name        = "pathfinder-lambda-policy"
+  name        = "lambda-policy"
   description = "IAM policy for Pathfinder Lambda"
   policy      = data.aws_iam_policy_document.lambda.json
 }
@@ -71,6 +71,7 @@ data "aws_iam_policy_document" "datasync" {
     actions = [
       "s3:GetBucketLocation",
       "s3:ListBucket",
+      "s3:ListObjectsV2",
       "s3:ListBucketMultipartUploads",
       "s3:AbortMultipartUpload",
       "s3:DeleteObject",

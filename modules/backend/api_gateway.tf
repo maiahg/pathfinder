@@ -1,10 +1,10 @@
 ########################################################################################
-# Define the API Gateway to call the pathfinder endpoints
+# Define the API Gateway to call the backend endpoints
 ########################################################################################
 
 resource "aws_api_gateway_rest_api" "rest_api" {
-  name        = "pathfinder-api"
-  description = "REST API to call the pathfinder endpoints"
+  name        = "api"
+  description = "REST API to call the backend endpoints"
 }
 
 resource "aws_api_gateway_resource" "rest_api_path_root" {

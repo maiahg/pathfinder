@@ -16,6 +16,12 @@ resource "aws_cloudwatch_log_group" "get_direction" {
   name              = "/aws/lambda/${aws_lambda_function.get_direction.function_name}"
   retention_in_days = 3
 }
+
+resource "aws_cloudwatch_log_group" "get_safe_direction" {
+  name              = "/aws/lambda/${aws_lambda_function.get_safe_direction.function_name}"
+  retention_in_days = 3
+}
+
 resource "aws_cloudwatch_log_group" "get_unsafe_areas" {
   name              = "/aws/lambda/${aws_lambda_function.get_unsafe_areas.function_name}"
   retention_in_days = 3

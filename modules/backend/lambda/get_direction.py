@@ -5,7 +5,6 @@ import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-
 def lambda_handler(event, context):
     '''
     Lambda function to calculate the direction between origin and destinations.

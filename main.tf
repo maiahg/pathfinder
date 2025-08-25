@@ -8,7 +8,6 @@ terraform {
   }
 }
 
-module "pathfinder" {
-  source = "./modules/pathfinder"
-
+module "backend" {
+  source = "./modules/backend"
 }

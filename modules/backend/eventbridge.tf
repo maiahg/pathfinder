@@ -27,7 +27,7 @@ resource "aws_cloudwatch_event_target" "update_crimes_target" {
 ########################################################################################
 
 resource "aws_cloudwatch_event_rule" "thaw_api_lambdas_cron" {
-  name                = "pathfinder-thaw_api_lambdas_cron"
+  name                = "thaw_api_lambdas_cron"
   description         = "Trigger API lambdas every 10 minutes to keep them warm"
   schedule_expression = "rate(10 minutes)"
   state               = "ENABLED"

@@ -3,6 +3,6 @@
 ############################################
 
 resource "aws_s3_bucket" "custom_files" {
-  bucket        = "custom-files-valhalla"
+  bucket        = "valhalla-custom-files"
   force_destroy = true
 }
