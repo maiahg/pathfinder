@@ -35,7 +35,7 @@ def lambda_handler(event, context):
         return {
             "statusCode": 200,
             "body": json.dumps(
-                f"Updated {len(to_update_or_add)} geohashes, deleted {len(to_delete)} geohashes"
+                f"Updated {len(to_update_or_add)} crimes, deleted {len(to_delete)} crimes"
             )
         }
 

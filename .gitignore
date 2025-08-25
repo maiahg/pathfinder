@@ -43,3 +43,7 @@ temp
 *.tfvars
 *.tfstate
 terraform.tfstate.backup
+
+# Valhalla files
+custom_files
+frontend

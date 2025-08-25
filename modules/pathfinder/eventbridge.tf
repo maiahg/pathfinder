@@ -21,3 +21,30 @@ resource "aws_cloudwatch_event_target" "update_crimes_target" {
   target_id = "UpdateCrimesLambda"
   arn       = aws_lambda_function.update_crimes.arn
 }
+
+########################################################################################
+# Event setup to ping the PI lambdas to keep them warm
+########################################################################################
+
+resource "aws_cloudwatch_event_rule" "thaw_api_lambdas_cron" {
+  name                = "pathfinder-thaw_api_lambdas_cron"
+  description         = "Trigger API lambdas every 10 minutes to keep them warm"
+  schedule_expression = "rate(10 minutes)"
+  state               = "ENABLED"
+}
+
+resource "aws_cloudwatch_event_target" "thaw_get_direction_cron" {
+  arn  = aws_lambda_function.get_direction.arn
+  rule = aws_cloudwatch_event_rule.thaw_api_lambdas_cron.id
+  input = jsonencode({
+    "action" : "thaw"
+  })
+}
+
+resource "aws_cloudwatch_event_target" "thaw_get_unsafe_areas_cron" {
+  arn  = aws_lambda_function.get_unsafe_areas.arn
+  rule = aws_cloudwatch_event_rule.thaw_api_lambdas_cron.id
+  input = jsonencode({
+    "action" : "thaw"
+  })
+}

@@ -5,6 +5,7 @@ import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibWFpYWhnIiwiYSI6ImNtZWc2enl1ZjE0dWIya29sYzRiMDVnbmoifQ.e7y7bB8zQh2kzTM6g7wlng'
 
 def lambda_handler(event, context):
     """

@@ -22,28 +22,19 @@ resource "aws_cloudwatch_log_group" "get_unsafe_areas" {
 }
 
 ########################################################################################
-# Event setup to ping the PI lambdas to keep them warm
+# Log group for API Gateway
 ########################################################################################
 
-resource "aws_cloudwatch_event_rule" "thaw_api_lambdas_cron" {
-  name                = "pathfinder-thaw_api_lambdas_cron"
-  description         = "Trigger API lambdas every 10 minutes to keep them warm"
-  schedule_expression = "rate(10 minutes)"
-  state               = "ENABLED"
+resource "aws_cloudwatch_log_group" "api_gateway" {
+  name              = "/aws/api-gateway/${aws_api_gateway_rest_api.rest_api.name}"
+  retention_in_days = 3
 }
 
-resource "aws_cloudwatch_event_target" "thaw_get_direction_cron" {
-    arn      = aws_lambda_function.get_direction.arn
-    rule     = aws_cloudwatch_event_rule.thaw_api_lambdas_cron.id
-    input = jsonencode({
-      "action": "thaw"
-    })
-}
+########################################################################################
+# Log group for Datasync
+########################################################################################
 
-resource "aws_cloudwatch_event_target" "thaw_get_unsafe_areas_cron" {
-  arn       = aws_lambda_function.get_unsafe_areas.arn
-  rule      = aws_cloudwatch_event_rule.thaw_api_lambdas_cron.id
-  input = jsonencode({
-    "action": "thaw"
-})
+resource "aws_cloudwatch_log_group" "datasync" {
+  name              = "/aws/datasync/${aws_datasync_task.s3_to_efs.name}"
+  retention_in_days = 3
 }

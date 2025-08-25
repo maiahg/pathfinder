@@ -30,9 +30,10 @@ resource "aws_api_gateway_deployment" "rest_api" {
 }
 
 resource "aws_api_gateway_stage" "prod" {
-  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
   deployment_id = aws_api_gateway_deployment.rest_api.id
-  stage_name = "prod"
+  stage_name    = "prod"
+  depends_on    = [aws_cloudwatch_log_group.api_gateway]
 
   lifecycle {
     create_before_destroy = true
@@ -50,21 +51,21 @@ resource "aws_api_gateway_resource" "get_unsafe_areas" {
 }
 
 resource "aws_api_gateway_method" "get_unsafe_areas" {
-  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
-  resource_id   = aws_api_gateway_resource.get_unsafe_areas.id
-  http_method   = "GET"
-  authorization = "NONE"
+  rest_api_id      = aws_api_gateway_rest_api.rest_api.id
+  resource_id      = aws_api_gateway_resource.get_unsafe_areas.id
+  http_method      = "GET"
+  authorization    = "NONE"
   api_key_required = false
 }
 
 resource "aws_api_gateway_integration" "get_unsafe_areas" {
-  rest_api_id          = aws_api_gateway_rest_api.rest_api.id
-  resource_id          = aws_api_gateway_resource.get_unsafe_areas.id
-  http_method          = aws_api_gateway_method.get_unsafe_areas.http_method
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  resource_id = aws_api_gateway_resource.get_unsafe_areas.id
+  http_method = aws_api_gateway_method.get_unsafe_areas.http_method
 
   integration_http_method = "POST"
-  type                 = "AWS_PROXY"
-  uri                    = aws_lambda_function.get_unsafe_areas.invoke_arn
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.get_unsafe_areas.invoke_arn
 }
 
 resource "aws_api_gateway_method_response" "get_unsafe_areas" {
@@ -95,6 +96,8 @@ resource "aws_api_gateway_integration_response" "get_unsafe_areas" {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
     "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS'"
   }
+
+  depends_on = [aws_api_gateway_integration.get_unsafe_areas]
 }
 
 resource "aws_api_gateway_method" "get_unsafe_areas_options" {
@@ -105,10 +108,10 @@ resource "aws_api_gateway_method" "get_unsafe_areas_options" {
 }
 
 resource "aws_api_gateway_integration" "get_unsafe_areas_options" {
-  rest_api_id             = aws_api_gateway_rest_api.rest_api.id
-  resource_id             = aws_api_gateway_resource.get_unsafe_areas.id
-  http_method             = aws_api_gateway_method.get_unsafe_areas_options.http_method
-  type                    = "MOCK"
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  resource_id = aws_api_gateway_resource.get_unsafe_areas.id
+  http_method = aws_api_gateway_method.get_unsafe_areas_options.http_method
+  type        = "MOCK"
   request_templates = {
     "application/json" = "{\"statusCode\": 200}"
   }
@@ -142,6 +145,8 @@ resource "aws_api_gateway_integration_response" "get_unsafe_areas_options" {
     "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS'"
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
   }
+
+  depends_on = [aws_api_gateway_integration.get_unsafe_areas]
 }
 
 resource "aws_api_gateway_method" "get_unsafe_areas_any" {
@@ -152,10 +157,10 @@ resource "aws_api_gateway_method" "get_unsafe_areas_any" {
 }
 
 resource "aws_api_gateway_integration" "get_unsafe_areas_any" {
-  rest_api_id             = aws_api_gateway_rest_api.rest_api.id
-  resource_id             = aws_api_gateway_resource.get_unsafe_areas.id
-  http_method             = aws_api_gateway_method.get_unsafe_areas_any.http_method
-  type                    = "MOCK"
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  resource_id = aws_api_gateway_resource.get_unsafe_areas.id
+  http_method = aws_api_gateway_method.get_unsafe_areas_any.http_method
+  type        = "MOCK"
   request_templates = {
     "application/json" = "{\"statusCode\": 200}"
   }
@@ -189,6 +194,8 @@ resource "aws_api_gateway_integration_response" "get_unsafe_areas_any" {
     "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS'"
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
   }
+
+  depends_on = [aws_api_gateway_integration.get_unsafe_areas]
 }
 
 ########################################################################################
@@ -202,21 +209,21 @@ resource "aws_api_gateway_resource" "get_direction" {
 }
 
 resource "aws_api_gateway_method" "get_direction" {
-  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
-  resource_id   = aws_api_gateway_resource.get_direction.id
-  http_method   = "POST"
-  authorization = "NONE"
+  rest_api_id      = aws_api_gateway_rest_api.rest_api.id
+  resource_id      = aws_api_gateway_resource.get_direction.id
+  http_method      = "POST"
+  authorization    = "NONE"
   api_key_required = false
 }
 
 resource "aws_api_gateway_integration" "get_direction" {
-  rest_api_id          = aws_api_gateway_rest_api.rest_api.id
-  resource_id          = aws_api_gateway_resource.get_direction.id
-  http_method          = aws_api_gateway_method.get_direction.http_method
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  resource_id = aws_api_gateway_resource.get_direction.id
+  http_method = aws_api_gateway_method.get_direction.http_method
 
   integration_http_method = "POST"
-  type                 = "AWS_PROXY"
-  uri                    = aws_lambda_function.get_direction.invoke_arn
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.get_direction.invoke_arn
 }
 
 resource "aws_api_gateway_method_response" "get_direction" {
@@ -234,6 +241,8 @@ resource "aws_api_gateway_method_response" "get_direction" {
     "method.response.header.Access-Control-Allow-Headers" = true
     "method.response.header.Access-Control-Allow-Methods" = true
   }
+
+  depends_on = [aws_api_gateway_integration.get_direction]
 }
 
 resource "aws_api_gateway_integration_response" "get_direction" {
@@ -247,6 +256,8 @@ resource "aws_api_gateway_integration_response" "get_direction" {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
     "method.response.header.Access-Control-Allow-Methods" = "'POST,OPTIONS'"
   }
+
+  depends_on = [aws_api_gateway_integration.get_direction]
 }
 
 resource "aws_api_gateway_method" "get_direction_options" {
@@ -257,10 +268,10 @@ resource "aws_api_gateway_method" "get_direction_options" {
 }
 
 resource "aws_api_gateway_integration" "get_direction_options" {
-  rest_api_id             = aws_api_gateway_rest_api.rest_api.id
-  resource_id             = aws_api_gateway_resource.get_direction.id
-  http_method             = aws_api_gateway_method.get_direction_options.http_method
-  type                    = "MOCK"
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  resource_id = aws_api_gateway_resource.get_direction.id
+  http_method = aws_api_gateway_method.get_direction_options.http_method
+  type        = "MOCK"
   request_templates = {
     "application/json" = "{\"statusCode\": 200}"
   }
@@ -294,6 +305,8 @@ resource "aws_api_gateway_integration_response" "get_direction_options" {
     "method.response.header.Access-Control-Allow-Methods" = "'POST,OPTIONS'"
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
   }
+
+  depends_on = [aws_api_gateway_integration.get_direction]
 }
 
 resource "aws_api_gateway_method" "get_direction_any" {
@@ -304,10 +317,10 @@ resource "aws_api_gateway_method" "get_direction_any" {
 }
 
 resource "aws_api_gateway_integration" "get_direction_any" {
-  rest_api_id             = aws_api_gateway_rest_api.rest_api.id
-  resource_id             = aws_api_gateway_resource.get_direction.id
-  http_method             = aws_api_gateway_method.get_direction_any.http_method
-  type                    = "MOCK"
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  resource_id = aws_api_gateway_resource.get_direction.id
+  http_method = aws_api_gateway_method.get_direction_any.http_method
+  type        = "MOCK"
   request_templates = {
     "application/json" = "{\"statusCode\": 200}"
   }
@@ -345,4 +358,6 @@ resource "aws_api_gateway_integration_response" "get_direction_any" {
   response_templates = {
     "application/json" = "{\"statusCode\":200}"
   }
+
+  depends_on = [aws_api_gateway_integration.get_direction]
 }
