@@ -7,6 +7,7 @@ resource "aws_efs_file_system" "valhalla" {
 
 resource "aws_efs_mount_target" "valhalla" {
   file_system_id  = aws_efs_file_system.valhalla.id
-  subnet_id       = data.aws_subnets.default.ids[0]
-  security_groups = [aws_security_group.valhalla_sg.id]
+  for_each        = toset(data.aws_subnets.default.ids)
+  subnet_id       = each.value
+  security_groups = [aws_security_group.valhalla.id]
 }

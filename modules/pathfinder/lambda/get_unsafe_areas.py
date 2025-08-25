@@ -13,7 +13,6 @@ def lambda_handler(event, context):
     try:
         # preflight response for CORS
         if event.get("httpMethod") == "OPTIONS":
-            # Preflight response
             return {
                 "statusCode": 200,
                 "headers": {

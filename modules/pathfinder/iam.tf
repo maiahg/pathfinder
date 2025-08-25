@@ -115,3 +115,46 @@ resource "aws_iam_role_policy_attachment" "datasync" {
   role       = aws_iam_role.datasync.name
   policy_arn = aws_iam_policy.datasync.arn
 }
+
+########################################################################################
+# Role and policies for the ECS execution
+########################################################################################
+
+data "aws_iam_policy_document" "ecs_execution" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "elasticfilesystem:ClientMount",
+      "elasticfilesystem:ClientWrite",
+      "elasticfilesystem:DescribeMountTargets"
+    ]
+    resources = ["*"]
+  }
+}
+
+data "aws_iam_policy_document" "ecs_assume_role" {
+  statement {
+    effect = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "ecs_execution" {
+  name               = "pathfinder-ecs-execution"
+  assume_role_policy = data.aws_iam_policy_document.ecs_assume_role.json
+}
+
+resource "aws_iam_policy" "ecs_execution" {
+  name   = "pathfinder-ecs-execution-policy"
+  description = "IAM policy for Pathfinder ECS execution role"
+  policy = data.aws_iam_policy_document.ecs_execution.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_execution" {
+  role       = aws_iam_role.ecs_execution.name
+  policy_arn = aws_iam_policy.ecs_execution.arn
+}

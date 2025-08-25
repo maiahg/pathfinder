@@ -2,7 +2,7 @@
 # Security Group for Valhalla Service
 ########################################################################################
 
-resource "aws_security_group" "valhalla_sg" {
+resource "aws_security_group" "valhalla" {
   name        = "pathfinder-valhalla-sg"
   description = "Allow traffic to Valhalla service"
   vpc_id      = data.aws_vpc.default.id

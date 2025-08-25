@@ -1,14 +1,16 @@
-import json
-import httpx
 import logging
+import json
+import geohash
+import httpx
+from commons import constants as c
+from services import crime_service
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-
 def lambda_handler(event, context):
     '''
-    Lambda function to calculate the direction between origin and destinations.
+    Lambda function to get the safe direction between origin and destinations.
     '''
     try:
         # preflight response for CORS
@@ -33,43 +35,41 @@ def lambda_handler(event, context):
                 "statusCode": 400,
                 "body": json.dumps({"error": "origin and destinations are required"})
             }
-
-        coordinates = f"{origin[0]},{origin[1]}"
-        for dest in destinations:
-            coordinates += f";{dest[0]},{dest[1]}"
         
-        mapbox_url = (
-            f"https://api.mapbox.com/directions/v5/mapbox/{profile}/{coordinates}"
-            f"?steps=true&geometries=geojson&access_token={MAPBOX_ACCESS_TOKEN}"
-        )
-
-        with httpx.Client() as client:
-            resp = client.get(mapbox_url)
-            data = resp.json()
+        geohashes = []
+        geohashes.append(geohash.encode(origin[1], origin[0], c.GEOHASH_LIMIT))
+        for destination in destinations:
+            geohashes.append(geohash.encode(destination[1], destination[0], c.GEOHASH_LIMIT))
         
-        route = data["routes"][0]["geometry"]
-        steps = data["routes"][0]["legs"][0]["steps"]
+        excluded_polygons = crime_service.get_excluded_polygons(geohashes)
         
-        details = [
-            {
-                "instruction": step["maneuver"]["instruction"],
-                "duration": step["duration"],
-                "distance": step["distance"]
-            }
-            for step in steps
-        ]
+        if excluded_polygons is None:
+            excluded_polygons = []
         
-        response_body = {
-            "type": "Feature",
-            "properties": {},
-            "geometry": route,
-            "details": details,
-            "summary": {
-                "path_summary": data["routes"][0]["legs"][0]["summary"],
-                "duration": data["routes"][0]["duration"],
-                "distance": data["routes"][0]["distance"]
-            }
+        if profile == "driving":
+            costing = "auto"
+        elif profile == "walking":
+            costing = "pedestrian"
+        elif profile == "cycling":
+            costing = "bicycle"
+        else:
+            raise ValueError(f"Invalid profile: {profile}")
+        
+        
+        request_body = {
+            "locations": [{"lat": origin[1], "lon": origin[0]}] + [
+                {"lat": d[1], "lon": d[0]} for d in destinations
+            ],
+            "costing": costing,
+            "exclude_polygons": excluded_polygons,
+            "units": "kilometers"
         }
+        
+        with httpx.Client() as client:
+            resp = client.post(VALHALLA_ENDPOINT, json=request_body)
+            data = resp.json()
+
+        response_body = crime_service.map_valhalla_to_directions_response(data)
 
         return {
             "statusCode": 200,

@@ -196,3 +196,49 @@ resource "aws_lambda_permission" "get_unsafe_areas" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.rest_api.execution_arn}/*/*"
 }
+
+########################################################################################
+# Lambda get_safe_direction
+########################################################################################
+
+resource "aws_lambda_function" "get_safe_direction" {
+  filename         = data.archive_file.get_safe_direction.output_path
+  function_name    = "get-safe-direction"
+  handler          = "get_safe_direction.lambda_handler"
+  source_code_hash = data.archive_file.get_safe_direction.output_base64sha256
+  description      = "Lambda function to get safe direction from Valhalla"
+  role             = aws_iam_role.lambda.arn
+  runtime          = local.python_runtime
+  timeout          = 300
+  layers           = [aws_lambda_layer_version.python_layer.arn]
+  depends_on       = [data.archive_file.add_crimes]
+}
+
+data "archive_file" "get_safe_direction" {
+  type        = "zip"
+  output_path = "${path.module}/temp/get_safe_direction.zip"
+
+  source {
+    content  = file("${path.module}/lambda/get_safe_direction.py")
+    filename = "get_safe_direction.py"
+  }
+
+  dynamic "source" {
+    for_each = local.all_python_files
+
+    content {
+      content  = file(source.value)
+      filename = source.key
+    }
+  }
+
+  depends_on = [random_uuid.archive_trigger]
+}
+
+resource "aws_lambda_permission" "get_safe_direction" {
+  statement_id  = "AllowAPIGatewayInvokeGetSafeDirection"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.get_safe_direction.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.rest_api.execution_arn}/*/*"
+}

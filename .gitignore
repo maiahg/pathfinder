@@ -46,4 +46,3 @@ terraform.tfstate.backup
 
 # Valhalla files
 custom_files
-frontend

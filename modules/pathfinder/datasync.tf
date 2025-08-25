@@ -12,7 +12,7 @@ resource "aws_datasync_location_efs" "efs_location" {
   subdirectory        = "/"
 
   ec2_config {
-    security_group_arns = [aws_security_group.valhalla_sg.arn]
+    security_group_arns = [aws_security_group.valhalla.arn]
     subnet_arn          = data.aws_subnet.first.arn
   }
 
