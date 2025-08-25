@@ -3,6 +3,8 @@ A crime-aware route planning system that helps users travel safely by avoiding h
 
 Also a learning project for me to play around with AWS services and IaC with Terraform.
 ## Demo
+https://github.com/user-attachments/assets/9131beda-308d-45ee-97d7-58fdb7688685
+
 
 ## Architecture Diagram
 ![Architecture Diagram](./assets/architecture.png)
