@@ -1,6 +1,6 @@
 import { bbox } from "@turf/turf";
 import mapboxgl from "mapbox-gl";
-import { getDirections, getSafeDirections } from "./services";
+import { getDirection, getSafeDirection } from "./services";
 
 export function formatDuration(duration: number) {
   let hr = 0;
@@ -89,7 +89,7 @@ export function UpdateRouteLayer(origin: [number, number],
 
   originMarker.on("dragend", () => {
     const lngLat = originMarker.getLngLat();
-    safeMode ? getSafeDirections(map, [lngLat.lng, lngLat.lat], destinations, profile) : getDirections(map, [lngLat.lng, lngLat.lat], destinations, profile);
+    safeMode ? getSafeDirection(map, [lngLat.lng, lngLat.lat], destinations, profile) : getDirection(map, [lngLat.lng, lngLat.lat], destinations, profile);
   });
 
   // Add destination markers
@@ -105,7 +105,7 @@ export function UpdateRouteLayer(origin: [number, number],
       const newCoords = destinationMarker.getLngLat();
       const newDestinations = [...destinations];
       newDestinations[i] = [newCoords.lng, newCoords.lat];
-      safeMode ? getSafeDirections(map, origin, newDestinations, profile) : getDirections(map, origin, newDestinations, profile);
+      safeMode ? getSafeDirection(map, origin, newDestinations, profile) : getDirection(map, origin, newDestinations, profile);
     });
   });
 
