@@ -9,6 +9,25 @@ https://github.com/user-attachments/assets/9131beda-308d-45ee-97d7-58fdb7688685
 ## Architecture Diagram
 ![Architecture Diagram](./assets/architecture.png)
 
+## Features
+- Interactive Map Exploration: Zoom, pan, find directions between multiple places, interactive route generation, geolocate user's location, display high-crime areas
+  
+- Optimized route suggestions:
+  - Suggests the shortest route among multiple destinations, with different modes of transportation (driving, walking, cycling)
+  -  Showing route summary (distance, time) and detailed route information (steps, turn by turn instructions)
+  
+- Safe route suggestions:
+  - Suggests safe routes among multiple destinations for different modes of transportation (driving, walking, cycling), avoiding high-crime areas
+  - Showing summary of the route (distance, time) and detailed route information (steps, turn by turn instructions)
+
+## Project Tech Stack
+- Frontend: Vite, React, Material UI, Mapbox
+- Backend: AWS Lambda, API Gateway, S3, EFS, DataSync, Fargate, EventBridge, CloudWatch, Secrets Manager, Valhalla Routing Engine
+- Database: DynamoDB
+- Infrastructure: Terraform
+- APIs: Mapbox Directions API, Google Maps API
+- Datasources: Canada OpenStreetMap, Toronto Police Service Crime Data
+
 ## Room for improvements
 ### Features
 - Add search bar to search for destionations with their information (like in Google Maps)
