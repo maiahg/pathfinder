@@ -99,10 +99,10 @@ def get_excluded_polygons(targeted_gh):
     
     polygons = []
     for crime in crimes:
-        count = float(crime['count'])
+        count = int(crime['count'])
         crime_geohash = crime['geohash']
         
-        if count < threshold or crime_geohash[:c.GEOHASH_LIMIT] not in targeted_gh:
+        if count < int(threshold) or crime_geohash[:c.GEOHASH_LIMIT] not in targeted_gh:
             continue
         
         polygon = geohash_to_polygon(crime_geohash)

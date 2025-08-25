@@ -3,5 +3,5 @@ CRIME_DATA_SOURCE='https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/serv
 
 # CONFIGURABLE VALUES
 PERCENTILE = 97
-GEOHASH_LIMIT = 6
+GEOHASH_LIMIT = 5
 GEOHASH_PRECISION = 7

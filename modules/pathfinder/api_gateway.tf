@@ -10,7 +10,7 @@ resource "aws_api_gateway_rest_api" "rest_api" {
 resource "aws_api_gateway_resource" "rest_api_path_root" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
   parent_id   = aws_api_gateway_rest_api.rest_api.root_resource_id
-  path_part   = "pathfinder-api"
+  path_part   = "api"
 }
 
 resource "aws_api_gateway_deployment" "rest_api" {
@@ -33,7 +33,7 @@ resource "aws_api_gateway_deployment" "rest_api" {
 resource "aws_api_gateway_stage" "prod" {
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
   deployment_id = aws_api_gateway_deployment.rest_api.id
-  stage_name    = "prod"
+  stage_name    = "gateway"
   depends_on    = [aws_cloudwatch_log_group.api_gateway]
 
   lifecycle {

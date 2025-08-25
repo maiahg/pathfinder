@@ -6,7 +6,6 @@ import json
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-
 def lambda_handler(event, context):
     '''
     Lambda function to fetch crimes from the source and add them to the database.
