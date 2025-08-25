@@ -10,4 +10,7 @@ terraform {
 
 module "backend" {
   source = "./modules/backend"
+
+  mapbox_secret_arn = var.mapbox_secret_arn
+  valhalla_endpoint = var.valhalla_endpoint
 }

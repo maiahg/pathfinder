@@ -14,6 +14,7 @@ locals {
   common_python_files = {
     "commons/constants.py"       = "${path.root}/scripts/commons/constants.py"
     "commons/dynamodb_helper.py" = "${path.root}/scripts/commons/dynamodb_helper.py"
+    "commons/secret_manager_helper.py" = "${path.root}/scripts/commons/secret_manager_helper.py"
   }
 
   service_python_files = {
@@ -109,6 +110,10 @@ data "archive_file" "update_crimes" {
 # Lambda get_direction
 ########################################################################################
 
+data "aws_secretsmanager_secret" "mapbox" {
+  arn = var.mapbox_secret_arn
+}
+
 resource "aws_lambda_function" "get_direction" {
   filename         = data.archive_file.get_direction.output_path
   function_name    = "get-direction"
@@ -119,7 +124,7 @@ resource "aws_lambda_function" "get_direction" {
   runtime          = local.python_runtime
   timeout          = 300
   layers           = [aws_lambda_layer_version.python_layer.arn]
-  depends_on       = [data.archive_file.add_crimes]
+  depends_on       = [data.archive_file.get_direction]
 }
 
 data "archive_file" "get_direction" {
@@ -165,7 +170,7 @@ resource "aws_lambda_function" "get_unsafe_areas" {
   runtime          = local.python_runtime
   timeout          = 300
   layers           = [aws_lambda_layer_version.python_layer.arn]
-  depends_on       = [data.archive_file.add_crimes]
+  depends_on       = [data.archive_file.get_unsafe_areas]
 }
 
 data "archive_file" "get_unsafe_areas" {
@@ -211,7 +216,13 @@ resource "aws_lambda_function" "get_safe_direction" {
   runtime          = local.python_runtime
   timeout          = 300
   layers           = [aws_lambda_layer_version.python_layer.arn]
-  depends_on       = [data.archive_file.add_crimes]
+  depends_on       = [data.archive_file.get_safe_direction]
+
+  environment {
+    variables = {
+      VALHALLA_ENDPOINT = var.valhalla_endpoint
+    }
+  }
 }
 
 data "archive_file" "get_safe_direction" {

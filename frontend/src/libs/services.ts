@@ -1,7 +1,7 @@
 import { addUnsafeAreasLayer, UpdateRouteLayer } from "./utils";
 import { PATH } from "./config";
 
-export async function getDirections(
+export async function getDirection(
     map: mapboxgl.Map,
     origin: [number, number],
     destinations: [number, number][],
@@ -39,18 +39,17 @@ export async function getDirections(
       // return the details and summary
       return { details, summary };
     } catch (err) {
-      console.error("Error fetching route:", err);
+      return { error: "Failed to fetch route" };
     }
   }
   
-  export async function getSafeDirections(
+  export async function getSafeDirection(
   map: mapboxgl.Map,
   origin: [number, number],
   destinations: [number, number][],
   profile: string,
 ) {
   try {
-    console.log("getSafeDirections", origin, destinations, profile);
     const res = await fetch(`${PATH}/get-safe-direction`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -93,8 +92,7 @@ export async function getDirections(
 
     return { details, summary };
   } catch (err) {
-    console.error("Error fetching route:", err);
-    const errorMessage = "Network error occurred while fetching route";
+    const errorMessage = "Failed to fetch safe route";
     
     // Notify listeners about the error
     try {
@@ -115,6 +113,6 @@ export async function getDirections(
       addUnsafeAreasLayer(map, data);
       return data;
     } catch (err) {
-      console.error("Error fetching unsafe areas:", err);
+      return { error: "Failed to fetch unsafe areas" };
     }
   }

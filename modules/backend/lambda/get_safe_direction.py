@@ -4,6 +4,7 @@ import geohash
 import httpx
 from commons import constants as c
 from services import crime_service
+import os
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -12,6 +13,7 @@ def lambda_handler(event, context):
     '''
     Lambda function to get the safe direction between origin and destinations.
     '''
+    VALHALLA_ENDPOINT = os.getenv("VALHALLA_ENDPOINT")
     try:
         # preflight response for CORS
         if event.get("httpMethod") == "OPTIONS":

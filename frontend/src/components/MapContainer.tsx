@@ -3,7 +3,7 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import SearchBar from './SearchBar'
 import { LoadScript } from '@react-google-maps/api'
-import { getDirections, getSafeDirections, getUnsafeAreas } from '../libs/services'
+import { getDirection, getSafeDirection, getUnsafeAreas } from '../libs/services'
 
 const DEFAULT_CENTER: [number, number] = [-79.3832, 43.6532]
 const INITIAL_ZOOM = 12.5
@@ -43,7 +43,7 @@ function MapContainer({ mapboxAccessToken, googleMapsApiKey }: MapContainerProps
 
   const handleSearch = async (origin: [number, number], destinations: [number, number][], profile: string, safeMode: boolean) => {
     if (mapRef.current) {
-      const result = safeMode ? await getSafeDirections(mapRef.current, origin, destinations, profile) : await getDirections(mapRef.current, origin, destinations, profile)
+      const result = safeMode ? await getSafeDirection(mapRef.current, origin, destinations, profile) : await getDirection(mapRef.current, origin, destinations, profile)
       if (result) {
         // Ensure we always return the expected structure
         if ('error' in result) {

@@ -20,6 +20,19 @@ data "aws_iam_policy_document" "lambda" {
       aws_dynamodb_table.ytd_crime_data.arn,
     ]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+    ]
+
+    resources = [
+      var.mapbox_secret_arn,
+    ]
+  }
+
   statement {
     effect = "Allow"
     actions = [

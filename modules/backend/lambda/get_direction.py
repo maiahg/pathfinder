@@ -1,6 +1,7 @@
 import json
 import httpx
 import logging
+from commons import secret_manager_helper as smh
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -9,6 +10,7 @@ def lambda_handler(event, context):
     '''
     Lambda function to calculate the direction between origin and destinations.
     '''
+   
     try:
         # preflight response for CORS
         if event.get("httpMethod") == "OPTIONS":
@@ -21,6 +23,11 @@ def lambda_handler(event, context):
                     },
                     "body": ""
         }
+         
+        # get mapbox access token from secret manager
+        secret = smh.get_secret()
+        secret_dict = json.loads(secret)
+        MAPBOX_ACCESS_TOKEN = secret_dict.get("MAPBOX_ACCESS_TOKEN")
                 
         body = json.loads(event.get("body", "{}")) if isinstance(event.get("body"), str) else event.get("body", {})
         origin = body.get("origin")
